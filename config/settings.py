@@ -37,7 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'recipe_app',
 ]
+
+AUTH_USER_MODEL = 'recipe_app.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
