@@ -144,7 +144,7 @@ class Recipe(models.Model):
         return calories
 
     def __str__(self):
-        return f"{self.title} - {"Премиум" if self.premium else ""}"
+        return f"""{self.title} - {"Премиум" if self.premium else ""}"""
 
 
 class RecipeIngredient(models.Model):
