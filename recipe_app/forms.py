@@ -11,5 +11,4 @@ class CustomUserCreationForm(UserCreationForm):
             "email",
             "password1",
             "password2",
-            "diet_preferences"
             )
