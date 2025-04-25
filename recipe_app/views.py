@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from .forms import CustomUserCreationForm
+from .models import User
 
 
 def registration(request):
@@ -22,14 +23,26 @@ def index(request):
 
 
 def user_login(request):
-    if request.POST:
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-        if user:
-            login(request, user)
-            return redirect("lk")
+    if request.method == "POST":
+        email = request.POST.get("email", "")
+        password = request.POST.get("password", "")
+        print(f"Ввод: email={email}, password={password}")
+        try:
+            user_obj = User.objects.get(email=email)
+            print(f"Нашли пользователя: {user_obj}")
+            user = authenticate(request, username=user_obj.username, password=password)
+            print(f"Результат аутентификации: {user}")
+            if user:
+                login(request, user)
+                print("Успешный вход, редирект в lk")
+                return redirect("lk")
+            else:
+                print("Неверный пароль")
+        except User.DoesNotExist:
+            print("Пользователь не найден")
     return render(request, "auth.html")
+
+
 
 
 def user_logout(request):

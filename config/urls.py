@@ -25,6 +25,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("", views.index, name="index"),
     path("login/", views.user_login, name="login"),
+    path("auth/", views.user_login),
     path("logout/", views.user_logout, name="logout"),
     path("card1/", views.card1, name="card1"),
     path("card2/", views.card2, name="card2"),
@@ -33,6 +34,7 @@ urlpatterns = [
     path("order/", views.order, name="order"),
     path("registration/", views.registration, name="registration"),
     path("admin/", admin.site.urls),
+
 ]
 
 if settings.DEBUG:

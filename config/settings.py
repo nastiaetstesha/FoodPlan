@@ -109,6 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'recipe_app.User'
 
+LOGIN_REDIRECT_URL = "/lk/"  # куда перенаправлять после входа
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
