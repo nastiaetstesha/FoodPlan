@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from .forms import CustomUserCreationForm
 from .models import User
+from .models import Recipe
 
 
 def registration(request):
@@ -18,8 +19,8 @@ def registration(request):
 
 
 def index(request):
-    context = {}
-    return HttpResponse(render(request, "index.html", context))
+    recipes = Recipe.objects.all()  # Все рецепты для главной
+    return render(request, "index.html", {"recipes": recipes})
 
 
 def user_login(request):
@@ -43,6 +44,26 @@ def user_login(request):
     return render(request, "auth.html")
 
 
+def recipe_detail(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    return render(request, "recipe_detail.html", {"recipe": recipe})
+
+
+def shopping_list(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    ingredients = recipe.ingredients.all()
+
+    total_price = sum(
+        item.ingredient.price * item.mass / 100
+        for item in ingredients
+    )
+
+    context = {
+        'recipe': recipe,
+        'ingredients': ingredients,
+        'total_price': total_price,
+    }
+    return render(request, 'shopping_list.html', context)
 
 
 def user_logout(request):

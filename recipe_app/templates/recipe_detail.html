@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ recipe.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-light fixed-top navbar__opacity">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img src="{% static 'img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main style="margin-top: calc(2rem + 85px);">
+        <div class="container my-5">
+            <div class="card mb-4">
+                <img src="{{ recipe.image.url }}" class="card-img-top" alt="{{ recipe.title }}">
+                <div class="card-body">
+                    <h1 class="card-title">{{ recipe.title }}</h1>
+                    <p class="card-text">{{ recipe.description }}</p>
+                    <h4 class="mt-4">Пошаговая инструкция</h4>
+                    <p>{{ recipe.sequence|linebreaks }}</p>
+
+                    <h4 class="mt-4">Стоимость: {{ recipe.price }} руб.</h4>
+                    <h4>Калорийность: {{ recipe.calories }} ккал</h4>
+                    <h4>Масса: {{ recipe.mass }} г</h4>
+
+                    <div class="mt-4">
+                        <a href="{% url 'shopping_list' recipe.id %}" class="btn btn-outline-success">Показать список продуктов</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

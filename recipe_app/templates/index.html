@@ -103,7 +103,19 @@
                     <div id="carousel1" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
                             <div class="carousel-item active">
-                                <img src="{% static 'img/1.jpg' %}" class="d-block w-100" alt="...">
+                                <!--  из бд -->
+                                {% for recipe in recipes %}
+                                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                    <a href="{% url 'recipe_detail' recipe.id %}">
+                                        <img src="{{ recipe.image.url }}" class="d-block w-100" alt="{{ recipe.title }}">
+                                        <div class="card-img-overlay text-white text-center carousel-item__gradient">
+                                            <h5><b>{{ recipe.description|default:"" }}</b></h5>
+                                            <h2><b>{{ recipe.title }}</b></h2>
+                                        </div>
+                                    </a>
+                                </div>
+                                {% endfor %}
+                                <!-- <img src="{% static 'img/1.jpg' %}" class="d-block w-100" alt="...">
                                 <div class="card-img-overlay text-white text-center carousel-item__gradient">
                                     <h5><b>Модный и полезный ужин</b></h5>
                                     <h2><b>Боул с креветками и рисом</b></h2>
@@ -138,7 +150,8 @@
                                     <h2><b>Брауни чизкейк с ягодами</b></h2>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
+                        <!--  -->
                         <button class="carousel-control-prev carousel__button_prev" type="button" data-bs-target="#carousel1"
                             data-bs-slide="prev">
                             <span class="foodplan_green" aria-hidden="true">

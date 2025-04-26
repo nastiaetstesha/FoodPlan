@@ -1,0 +1,40 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Список покупок для {{ recipe.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Список покупок для блюда "{{ recipe.title }}"</h1>
+
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Ингредиент</th>
+                    <th>Масса (г)</th>
+                    <th>Цена за 100 г (₽)</th>
+                    <th>Стоимость (₽)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in ingredients %}
+                <tr>
+                    <td>{{ item.ingredient.name }}</td>
+                    <td>{{ item.mass }}</td>
+                    <td>{{ item.ingredient.price }}</td>
+                    <td>{{ item.ingredient.price|floatformat:2|floatformat }} * {{ item.mass|floatformat:0 }} / 100 = {{ item.ingredient.price|floatformat:2|floatformat|floatformat|floatformat }} ₽</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h4 class="mt-4">Итоговая стоимость: <strong>{{ total_price|floatformat:2 }} ₽</strong></h4>
+
+        <a href="{% url 'index' %}" class="btn btn-outline-success mt-4">← Назад на главную</a>
+    </div>
+</body>
+</html>
