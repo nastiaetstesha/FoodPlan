@@ -86,43 +86,41 @@
                                     </form>
                                     
                                 </div>
-                                <div class="tab-pane fade" id="menu">
+                                <div class="tab-pane fade show active" id="menu">
                                     <div class="row">
                                         <div class="col-2">
-                                            <img src="img/circle1.png" alt="" class="w-100">
+                                            <img src="{% static 'img/circle1.png' %}" alt="" class="w-100">
                                         </div>
                                         <div class="col-10 col-md-10">
                                             <div class="row">
-                                                <div class="col-12">
-                                                    <h2>Название подписки</h2>
+                                                <div class="col-12 d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <h2>Название подписки</h2>
+                                                        <h6>Описание подписки Lorem ipsum dolor sit, amet consectetur adipisicing elit...</h6>
+                                                    </div>
+                                                    <a href="{% url 'order' %}" class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green mt-2">Продлить подписку</a>
                                                 </div>
                                                 <div class="col-md-12 col-lg-9">
-                                                    <h6>Описание подписки Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius saepe ea nobis necessitatibus
-                                                        consectetur rem! Eligendi assumenda facere sint quibusdam dolorem quasi doloribus nemo, temporibus molestiae
-                                                        distinctio cum laboriosam sed. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius saepe ea nobis
-                                                        necessitatibus consectetur rem! Eligendi
-                                                        assumenda facere sint quibusdam dolorem quasi doloribus nemo, temporibus molestiae distinctio cum laboriosam
-                                                        sed.</h6>
-                                                </div>
-                                                <div class="col-md-12 col-lg-3 text-muted d-flex flex-column justify-content-between">
-                                                    <div class="d-flex flex-row justify-content-between">
-                                                        <small>Персоны: </small><small>3</small>
+                                                    <div class="d-flex flex-column">
+                                                        <div class="d-flex flex-row justify-content-between">
+                                                            <small>Персоны:</small><small>3</small>
+                                                        </div>
+                                                        <div class="d-flex flex-row justify-content-between">
+                                                            <small>Аллергии:</small><small>нет</small>
+                                                        </div>
+                                                        <div class="d-flex flex-row justify-content-between">
+                                                            <small>Калории:</small><small>1400</small>
+                                                        </div>
+                                                        <div class="d-flex flex-row justify-content-between">
+                                                            <small>Кол-во приёмов пищи:</small><small>4</small>
+                                                        </div>
                                                     </div>
-                                                    <div class="d-flex flex-row justify-content-between">
-                                                        <small>Аллергии: </small><small>нет</small>
-                                                    </div>
-                                                    <div class="d-flex flex-row justify-content-between">
-                                                        <small>Калории: </small><small>1400</small>
-                                                    </div>
-                                                    <div class="d-flex flex-row justify-content-between">
-                                                        <small>Кол-во приёмов пищи: </small><small>4</small>
-                                                    </div>
-                                                    
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> 
+                                
                             </div>
                             
                     </div>
