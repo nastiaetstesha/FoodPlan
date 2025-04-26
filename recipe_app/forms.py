@@ -4,6 +4,7 @@ from .models import User
 
 
 class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
     class Meta:
         model = User
         fields = (
@@ -12,3 +13,7 @@ class CustomUserCreationForm(UserCreationForm):
             "password1",
             "password2",
             )
+
+class LoginForm(forms.Form):
+    email = forms.CharField(label='Email', widget=forms.EmailInput)
+    password = forms.CharField(label='Password', widget=forms.PasswordInput)

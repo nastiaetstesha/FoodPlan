@@ -34,6 +34,7 @@ DEBUG = env.bool("DEBUG", False)
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ['185.209.22.60'])
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -47,6 +48,10 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = "recipe_app.User"
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
