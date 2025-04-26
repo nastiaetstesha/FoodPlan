@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from .forms import CustomUserCreationForm
+from django.contrib.auth.decorators import login_required
+
 from .models import User
-from .models import Recipe
+from .models import Recipe, UserRecipeFeedback
 
 
 def registration(request):
@@ -47,6 +49,19 @@ def user_login(request):
 def recipe_detail(request, recipe_id):
     recipe = get_object_or_404(Recipe, id=recipe_id)
     return render(request, "recipe_detail.html", {"recipe": recipe})
+
+
+@login_required
+def recipe_feedback(request, recipe_id):
+    recipe = Recipe.objects.get(id=recipe_id)
+    liked = request.POST.get("liked") == "true"
+
+    feedback, created = UserRecipeFeedback.objects.update_or_create(
+        user=request.user,
+        recipe=recipe,
+        defaults={'liked': liked}
+    )
+    return redirect('recipe_detail', recipe_id=recipe_id)
 
 
 def shopping_list(request, recipe_id):

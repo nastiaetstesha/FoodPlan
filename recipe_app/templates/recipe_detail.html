@@ -35,6 +35,12 @@
 
                     <div class="mt-4">
                         <a href="{% url 'shopping_list' recipe.id %}" class="btn btn-outline-success">Показать список продуктов</a>
+                        <form method="post" action="{% url 'recipe_feedback' recipe.id %}">
+                            {% csrf_token %}
+                            <button type="submit" name="liked" value="true" class="btn btn-success">👍 Нравится</button>
+                            <button type="submit" name="liked" value="false" class="btn btn-danger">👎 Не нравится</button>
+                        </form>
+                        
                     </div>
                 </div>
             </div>

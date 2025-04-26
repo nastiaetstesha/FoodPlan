@@ -36,6 +36,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("recipe/<int:recipe_id>/", views.recipe_detail, name="recipe_detail"),
     path('shopping-list/<int:recipe_id>/', views.shopping_list, name='shopping_list'),
+    path('recipe/<int:recipe_id>/feedback/', views.recipe_feedback, name='recipe_feedback'),
+
 
 
 ]
