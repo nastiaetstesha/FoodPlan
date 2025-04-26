@@ -93,33 +93,56 @@
                                         </div>
                                         <div class="col-10 col-md-10">
                                             <div class="row">
-                                                <div class="col-12 d-flex justify-content-between align-items-start">
-                                                    <div>
-                                                        <h2>Название подписки</h2>
-                                                        <h6>Описание подписки Lorem ipsum dolor sit, amet consectetur adipisicing elit...</h6>
-                                                    </div>
-                                                    <a href="{% url 'order' %}" class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green mt-2">Продлить подписку</a>
+                                                <div class="col-12">
+                                                    <h2>Название подписки</h2>
                                                 </div>
+                                
+                                                <!-- Список блюд вместо описания подписки -->
                                                 <div class="col-md-12 col-lg-9">
-                                                    <div class="d-flex flex-column">
-                                                        <div class="d-flex flex-row justify-content-between">
-                                                            <small>Персоны:</small><small>3</small>
+                                                    {% for recipe in recipes %}
+                                                        <div class="card mb-3">
+                                                            <div class="row g-0 align-items-center">
+                                                                <div class="col-md-4">
+                                                                    <img src="{{ recipe.image.url }}" class="img-fluid rounded-start" alt="{{ recipe.title }}">
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <div class="card-body">
+                                                                        <h5 class="card-title">
+                                                                            <a href="{% url 'recipe_detail' recipe.id %}" class="link-dark text-decoration-none">
+                                                                                {{ recipe.title }}
+                                                                            </a>
+                                                                        </h5>
+                                                                        <p class="card-text">{{ recipe.description|truncatechars:150 }}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                        <div class="d-flex flex-row justify-content-between">
-                                                            <small>Аллергии:</small><small>нет</small>
-                                                        </div>
-                                                        <div class="d-flex flex-row justify-content-between">
-                                                            <small>Калории:</small><small>1400</small>
-                                                        </div>
-                                                        <div class="d-flex flex-row justify-content-between">
-                                                            <small>Кол-во приёмов пищи:</small><small>4</small>
-                                                        </div>
+                                                    {% empty %}
+                                                        <p>Нет доступных блюд.</p>
+                                                    {% endfor %}
+                                                </div>
+                                
+                                                <!-- Информация о подписке -->
+                                                <div class="col-md-12 col-lg-3 text-muted d-flex flex-column justify-content-between">
+                                                    <div class="d-flex flex-row justify-content-between">
+                                                        <small>Персоны: </small><small>{{ persons_count }}</small>
+                                                    </div>
+                                                    <div class="d-flex flex-row justify-content-between">
+                                                        <small>Аллергии: </small><small>{{ allergies_info }}</small>
+                                                    </div>
+                                                    <div class="d-flex flex-row justify-content-between">
+                                                        <small>Калории: </small><small>{{ calories }}</small>
+                                                    </div>
+                                                    <div class="d-flex flex-row justify-content-between">
+                                                        <small>Кол-во приёмов пищи: </small><small>{{ meals_count }}</small>
                                                     </div>
                                                 </div>
+                                
                                             </div>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
+                                
                                 
                             </div>
                             

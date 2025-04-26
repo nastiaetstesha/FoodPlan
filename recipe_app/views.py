@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 
 
 from .models import User
-from .models import Recipe, Ingredient, UserPage
+from .models import Recipe, Ingredient, UserPage, DailyMenu, UserPage
 
 # UserRecipeFeedback
 
@@ -129,9 +129,36 @@ def profile(request):
     return render(request, 'lk.html', {'user': request.user})
 
 
-def lk(request):
-    context = {}
-    return render(request, "lk.html", context)
+def lk_view(request):
+    user_page = UserPage.objects.filter(user=request.user).first()
+    today_menu = user_page.today_menu if user_page else None
+
+    if user_page and user_page.is_subscribed and today_menu:
+        recipes = [
+            today_menu.breakfast,
+            today_menu.lunch,
+            today_menu.dinner
+        ]
+    else:
+        random_recipe = Recipe.objects.order_by('?').first()
+        recipes = [random_recipe]
+
+    # Получаем инфу для персонального меню
+    persons_count = 1  # Пока жестко 1, если надо больше — нужно брать из модели подписки
+    allergies = user_page.allergies.all() if user_page else []
+    allergies_info = ", ".join([allergy.name for allergy in allergies]) if allergies else "нет"
+    calories = sum(recipe.calories for recipe in recipes if recipe)  # Считаем сумму калорий блюд
+    meals_count = len(recipes)
+
+    context = {
+        'recipes': recipes,
+        'user_page': user_page,
+        'persons_count': persons_count,
+        'allergies_info': allergies_info,
+        'calories': int(calories),
+        'meals_count': meals_count,
+    }
+    return render(request, 'lk.html', context)
 
 
 def order(request):

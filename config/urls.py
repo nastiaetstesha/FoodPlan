@@ -26,15 +26,13 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("login/", views.user_login, name="login"),
     path("logout/", views.user_logout, name="logout"),
-    path("lk/", views.lk, name="lk"),
+    path("lk/", views.lk_view, name="lk"),
     path("order/", views.order, name="order"),
     path("registration/", views.registration, name="registration"),
     path("admin/", admin.site.urls),
     path("recipe/<int:recipe_id>/", views.recipe_detail, name="recipe_detail"),
     path('shopping-list/<int:recipe_id>/', views.shopping_list, name='shopping_list'),
     path('recipe/<int:recipe_id>/feedback/', views.recipe_feedback, name='recipe_feedback'),
-    path('lk/', views.profile, name='profile'),
-
 ]
 
 if settings.DEBUG:
