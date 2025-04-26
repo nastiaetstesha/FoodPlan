@@ -124,6 +124,11 @@ def user_logout(request):
     return redirect("login")
 
 
+@login_required
+def profile(request):
+    return render(request, 'lk.html', {'user': request.user})
+
+
 def lk(request):
     context = {}
     return render(request, "lk.html", context)

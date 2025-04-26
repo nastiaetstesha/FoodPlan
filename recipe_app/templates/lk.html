@@ -60,33 +60,31 @@
                                     <form action="">
                                         <div class="mb-3">
                                             <div class="d-flex align-items-center justify-content-between">
-                                                <label for="exampleInputEmail1" class="form-label">Имя</label>
+                                                <label for="name" class="form-label">Имя</label>
                                                 <small><a href="#" class="link-dark foodplan_green">изменить</a></small>
                                             </div>
-                                        
-                                            <input type="text" class="form-control" id="name">
+                                            <input type="text" class="form-control" id="name" value="{{ user.first_name }}">
                                         </div>
                                         <div class="mb-3">
-                                            <label for="exampleInputEmail1" class="form-label">Email</label>
-                                            <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="email" value="{{ user.email }}" aria-describedby="emailHelp">
                                         </div>
                                         <div class="mb-3">
                                             <div class="d-flex align-items-center justify-content-between">
-                                                <label for="exampleInputPassword1" class="form-label">Пароль</label>
+                                                <label for="password" class="form-label">Пароль</label>
                                                 <small><a href="#" class="link-dark foodplan_green">изменить</a></small>
                                             </div>
-                                        
-                                            <input type="password" class="form-control" id="password">
+                                            <input type="password" class="form-control" id="password" placeholder="********" disabled>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="exampleInputPassword1" class="form-label">Подтверждение пароля</label>
-                                            <input type="password" class="form-control" id="PasswordConfirm">
+                                            <label for="PasswordConfirm" class="form-label">Подтверждение пароля</label>
+                                            <input type="password" class="form-control" id="PasswordConfirm" placeholder="********" disabled>
                                         </div>
                                         <div class="d-block">
-                                            <button type="submit" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Сохранить
-                                                изменения</button>
+                                            <button type="submit" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Сохранить изменения</button>
                                         </div>
                                     </form>
+                                    
                                 </div>
                                 <div class="tab-pane fade" id="menu">
                                     <div class="row">
