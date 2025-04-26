@@ -5,10 +5,10 @@ from django.core.validators import MinValueValidator
 
 
 class User(AbstractUser):
-    is_subscribed = models.BooleanField(default=False)
-    diet_preferences = models.JSONField(
-        default=list, blank=True
-    )  # Пример: ["vegan", "gluten_free"]
+    email = models.EmailField(unique=True)
+
+    class Meta:
+        verbose_name = "Юзеры"
 
 
 class FoodTag(models.Model):
@@ -87,7 +87,7 @@ class Recipe(models.Model):
     ]
 
     title = models.CharField(max_length=255, unique=True, verbose_name="Название блюда")
-    image = models.ImageField(verbose_name="Изображение")
+    image = models.ImageField(verbose_name="Изображение", upload_to="./recipes/")
     description = models.TextField(blank=True, verbose_name="Описание")
     tags = models.ManyToManyField(
         FoodTag, related_name="recipes", verbose_name="Теги блюда"
@@ -102,6 +102,11 @@ class Recipe(models.Model):
     premium = models.BooleanField(
         default=False, verbose_name="Для премиум-пользователей"
     )
+
+    on_index = models.BooleanField(
+        default=False, verbose_name="отображать на главной странице?"
+    )
+
     price = models.DecimalField(
         verbose_name="Итоговая стоимость, руб.",
         max_digits=10,
@@ -125,22 +130,24 @@ class Recipe(models.Model):
     )
 
     def get_price(self):
-        for recipe_ingredient in self.ingredients.all():
-            price += recipe_ingredient.ingredient.price * recipe_ingredient.mass / 100
+        price = 0
+        for ingredient in self.ingredients.all():
+            if ingredient.ingredient.price and ingredient.mass:
+                price += ingredient.ingredient.price * ingredient.mass / 100
         return price
 
     def get_mass(self):
-        for recipe_ingredient in self.ingredients.all():
-            mass += recipe_ingredient.mass
+        mass = 0
+        for ingredient in self.ingredients.all():
+            if ingredient.mass:
+                mass += ingredient.mass
         return mass
 
     def get_calories(self):
-        for recipe_ingredient in self.ingredients.all():
-            calories += (
-                recipe_ingredient.ingredient.mass
-                * recipe_ingredient.ingredient.caloricity
-                / 100
-            )
+        calories = 0
+        for ingredient in self.ingredients.all():
+            if ingredient.ingredient.caloricity and ingredient.mass:
+                calories += ingredient.mass * ingredient.ingredient.caloricity / 100
         return calories
 
     def __str__(self):
@@ -164,8 +171,37 @@ class RecipeIngredient(models.Model):
         return f"{self.recipe.title}: {self.ingredient.name}, {self.mass} г"
 
 
+class MenuType(models.Model):
+    title = models.CharField(max_length=255, unique=True, verbose_name="Тип меню")
+
+    def __str__(self):
+        return self.title
+
+
 class DailyMenu(models.Model):
-    date = models.DateField(default=timezone.now, unique=True)
+    DAYS_OF_WEEK = [
+        ("mon", "понедельник"),
+        ("tue", "вторник"),
+        ("wen", "среда"),
+        ("thu", "четверг"),
+        ("fri", "пятница"),
+        ("sat", "суббота"),
+        ("sun", "воскресенье"),
+    ]
+
+    menu_type = models.ForeignKey(
+        MenuType,
+        related_name="dailymenus",
+        verbose_name="Тип меню",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+
+    date = models.CharField(
+        choices=DAYS_OF_WEEK, verbose_name="День недели", default="mon"
+    )
+
     breakfast = models.ForeignKey(
         Recipe,
         on_delete=models.SET_NULL,
@@ -183,43 +219,49 @@ class DailyMenu(models.Model):
         return f"Меню на {self.date}"
 
 
-class UserRecipeFeedback(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    liked = models.BooleanField()  # True = лайк, False = дизлайк
-
-    class Meta:
-        unique_together = ("user", "recipe")
-
-
-class UserRecipeChoice(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField()
-    meal_type = models.CharField(max_length=20, choices=Recipe.MEAL_TYPES)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-
-    class Meta:
-        unique_together = ("user", "date", "meal_type")
-
-
-class ShoppingList(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField()
-
-    def total_price(self):
-        return sum(item.estimated_price for item in self.items.all())
-
-    def __str__(self):
-        return f"Список покупок {self.user.username} на {self.date}"
-
-
-class ShoppingItem(models.Model):
-    shopping_list = models.ForeignKey(
-        ShoppingList, on_delete=models.CASCADE, related_name="items"
+class UserPage(models.Model):
+    first_name = models.CharField(
+        max_length=255, verbose_name="Имя", blank=True, default="Имя"
     )
-    name = models.CharField(max_length=100)
-    quantity = models.CharField(max_length=50)
-    estimated_price = models.DecimalField(max_digits=6, decimal_places=2)
+    last_name = models.CharField(max_length=255, verbose_name="Фамилия", blank=True)
+    image = models.ImageField(
+        upload_to="./avatars/", verbose_name="Изображение", blank=True, null=True
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="page",
+        verbose_name="Связанный аккаунт",
+    )
+    is_subscribed = models.BooleanField(default=False, verbose_name="Премиум")
+    allergies = models.ManyToManyField(
+        FoodTag, related_name="userpages", verbose_name="Аллергии", blank=True
+    )
+    liked_recipes = models.ManyToManyField(
+        Recipe, related_name="liked", verbose_name="Понравившиеся рецепты", blank=True
+    )
+    disliked_recipes = models.ManyToManyField(
+        Recipe,
+        related_name="disliked",
+        verbose_name="Непонравившиеся рецепты",
+        blank=True,
+    )
+    today_menu = models.ForeignKey(
+        DailyMenu,
+        verbose_name="Меню на сегодня",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
 
-    def __str__(self):
-        return f"{self.name} — {self.quantity} — {self.estimated_price}₽"
+    def add_to_liked(self, recipe):
+        recipe.liked.add(self)
+        recipe.disliked.remove(self)
+
+    def add_to_disliked(self, recipe):
+        recipe.disliked.add(self)
+        recipe.liked.remove(self)
+
+    class Meta:
+        verbose_name = "Страницы клиентов"
+        ordering = ["first_name", "user"]
