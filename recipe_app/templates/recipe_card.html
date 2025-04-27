@@ -28,7 +28,7 @@
                 <div class="row">
                     <div class="col-12 col-md-4 d-flex justify-content-center">
                         <div class="card foodplan__card_borderless">
-                            <img src="{{ recipe.image.url }}" style="border-radius:50%" height="400", width="400" alt="">
+                            <img src="{{ recipe.image.url }}" class="rounded-pill" height="400", width="400" alt="">
                         </div>
                     </div>
                     <div class="col-12 col-md-8 d-flex flex-column justify-content-between">
@@ -71,8 +71,16 @@
                 <div class="like_panel">
                     <form method="post" action="{% url 'recipe_feedback' recipe.id %}">
                         {% csrf_token %}
-                        <button type="submit" name="liked" value="true" class="btn btn-success">👍 Нравится</button>
-                        <button type="submit" name="disliked" value="true" class="btn btn-danger">👎 Не нравится</button>
+                        <button type="submit" name="liked" value="true" class="btn {% if recipe in user_page.liked_recipes.all %} btn-success active {% else %} btn-outline-success {% endif %}" {% if not request.user.is_authenticated %} disabled title="Войдите, чтобы оценить" {% endif %} style="width: 180px; height: 40px; padding: 0;">
+                            <span class="emoji">👍</span>
+                            <span class="count">{{ recipe.liked.count }}</span>
+                            <span class="text">{% if recipe in user_page.liked_recipes.all %} Нравится {% else %} Понравилось {% endif %}</span>
+                        </button>
+                        <button type="submit" name="disliked" value="true" class="btn {% if recipe in user_page.disliked_recipes.all %} btn-danger active {% else %} btn-outline-danger {% endif %} ms-2" {% if not request.user.is_authenticated %} disabled title="Войдите, чтобы оценить" {% endif %} style="width: 180px; height: 40px; padding: 0;">
+                            <span class="emoji">👎</span>
+                            <span class="count">{{ recipe.disliked.count }}</span>
+                            <span class="text">{% if recipe in user_page.disliked_recipes.all %} Не нравится {% else %} Не понравилось {% endif %}</span>
+                        </button>
                     </form>
                 </div>
             </div>
