@@ -6,6 +6,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 
 
 class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
     class Meta:
         model = User
         fields = (
@@ -13,10 +14,7 @@ class CustomUserCreationForm(UserCreationForm):
             "email",
             "password1",
             "password2",
-            "diet_preferences"
             )
-<<<<<<< Updated upstream
-=======
 
 class LoginForm(forms.Form):
     email = forms.CharField(label='Email', widget=forms.EmailInput)
@@ -47,4 +45,3 @@ class CustomPasswordChangeForm(PasswordChangeForm):
         self.fields['old_password'].widget.attrs.update({'class': 'form-control'})
         self.fields['new_password1'].widget.attrs.update({'class': 'form-control'})
         self.fields['new_password2'].widget.attrs.update({'class': 'form-control'})
->>>>>>> Stashed changes

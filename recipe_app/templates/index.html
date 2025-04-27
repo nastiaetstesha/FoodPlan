@@ -40,7 +40,7 @@
                 <a class="navbar-brand" href="https://dvmn.org/">
                     <img src="{% static 'img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
                 </a>
-                <a href="{% url 'login' %}" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">
+                <a href={% if request.user.is_authenticated %}"{% url 'lk' %}" {% else %} "{% url 'login' %}" {% endif %} class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">
                     Войти
                 </a>
             </div>

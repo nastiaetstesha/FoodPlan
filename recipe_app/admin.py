@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from .models import (
     User,
     FoodTag,
@@ -6,19 +7,20 @@ from .models import (
     Recipe,
     RecipeIngredient,
     DailyMenu,
-    UserRecipeFeedback,
-    UserRecipeChoice,
-    ShoppingList,
-    ShoppingItem,
     PriceRange,
+    UserPage,
+    MenuType,
 )
 from django.utils.html import format_html
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ("username", "is_subscribed", "email")
-    list_filter = ("is_subscribed",)
+class UserAdmin(UserAdmin):
+    list_display = (
+        "username",
+        "email",
+    )
+    list_editable = ("email",)
 
 
 @admin.register(FoodTag)
@@ -26,8 +28,6 @@ class FoodTagAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
 
-<<<<<<< Updated upstream
-=======
 @admin.register(UserPage)
 class UserPageAdmin(admin.ModelAdmin):
     list_display = ("username", "user", "is_subscribed", "all_allergies", "image_preview")
@@ -52,7 +52,6 @@ class UserPageAdmin(admin.ModelAdmin):
     image_preview.short_description = "Превью изображения"
 
 
->>>>>>> Stashed changes
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     search_fields = ("name",)
@@ -76,11 +75,13 @@ class RecipeAdmin(admin.ModelAdmin):
         "price",
         "premium",
         "foodtags",
+        "on_index",
     ]
     list_filter = ("meal_type", "tags", "premium")
     inlines = [RecipeIngredientInline]
     readonly_fields = ["image_preview"]
     search_fields = ("title",)
+    list_editable = ("on_index", "premium")
 
     def foodtags(self, obj):
         if obj.tags:
@@ -90,9 +91,9 @@ class RecipeAdmin(admin.ModelAdmin):
     def image_preview(self, obj):
         if obj.image:
             return format_html(
-                '<img src="{url}" style="max-width: {max_width}px; max-height: {max_height}px; width: auto; height: auto;"/>',
-                max_width=200,
-                max_height=200,
+                '<img src="{url}" style="max-width: {max_width}px; max-height: {max_height}px; width: auto; height: auto; border-radius: 50%"/>',
+                max_width=100,
+                max_height=100,
                 url=obj.image.url,
             )
         return format_html('<span style="color: gray;">Нет изображения</span>')
@@ -100,36 +101,15 @@ class RecipeAdmin(admin.ModelAdmin):
     image_preview.short_description = "Превью изображения"
 
 
+
+@admin.register(MenuType)
+class MenuTypeAdmin(admin.ModelAdmin):
+    list_display = ("title",)
+
+
 @admin.register(DailyMenu)
 class DailyMenuAdmin(admin.ModelAdmin):
-    list_display = ("date", "breakfast", "lunch", "dinner")
-
-
-@admin.register(UserRecipeFeedback)
-class UserRecipeFeedbackAdmin(admin.ModelAdmin):
-    list_display = ("user", "recipe", "liked")
-    list_filter = ("liked",)
-
-
-@admin.register(UserRecipeChoice)
-class UserRecipeChoiceAdmin(admin.ModelAdmin):
-    list_display = ("user", "date", "meal_type", "recipe")
-
-
-class ShoppingItemInline(admin.TabularInline):
-    model = ShoppingItem
-    extra = 0
-
-
-@admin.register(ShoppingList)
-class ShoppingListAdmin(admin.ModelAdmin):
-    list_display = ("user", "date", "total_price")
-    inlines = [ShoppingItemInline]
-
-
-@admin.register(ShoppingItem)
-class ShoppingItemAdmin(admin.ModelAdmin):
-    list_display = ("shopping_list", "name", "quantity", "estimated_price")
+    list_display = ("date", "breakfast", "lunch", "dinner", "menu_type")
 
 
 @admin.register(PriceRange)

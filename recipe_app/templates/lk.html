@@ -68,29 +68,6 @@
                                         {% csrf_token %}
                                         <div class="mb-3">
                                             <div class="d-flex align-items-center justify-content-between">
-<<<<<<< Updated upstream
-                                                <label for="exampleInputEmail1" class="form-label">Имя</label>
-                                                <small><a href="#" class="link-dark foodplan_green">изменить</a></small>
-                                            </div>
-                                        
-                                            <input type="text" class="form-control" id="name">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="exampleInputEmail1" class="form-label">Email</label>
-                                            <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
-                                        </div>
-                                        <div class="mb-3">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <label for="exampleInputPassword1" class="form-label">Пароль</label>
-                                                <small><a href="#" class="link-dark foodplan_green">изменить</a></small>
-                                            </div>
-                                        
-                                            <input type="password" class="form-control" id="password">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="exampleInputPassword1" class="form-label">Подтверждение пароля</label>
-                                            <input type="password" class="form-control" id="PasswordConfirm">
-=======
                                                 <label for="username" class="form-label">Имя пользователя</label>
                                             </div>
                                             <input type="text" class="form-control" id="username" name="username" value="{{ user_page.username|default_if_none:'' }}" required>
@@ -98,15 +75,11 @@
                                         <div class="mb-3">
                                             <label for="email" class="form-label">Email</label>
                                             <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" aria-describedby="emailHelp" required>
->>>>>>> Stashed changes
                                         </div>
                                         <div class="d-block">
-                                            <button type="submit" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Сохранить
-                                                изменения</button>
+                                            <button type="submit" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Сохранить изменения</button>
                                         </div>
                                     </form>
-<<<<<<< Updated upstream
-=======
                                     <form method="post" action="{% url 'change_password' %}" enctype="multipart/form-data">
                                         <div class="modal-body">
                                             {% csrf_token %}
@@ -131,31 +104,20 @@
                                             <button type="submit" class="btn foodplan_green foodplan__border_green">Сохранить</button>
                                         </div>
                                     </form>
->>>>>>> Stashed changes
                                 </div>
-                                <div class="tab-pane fade" id="menu">
+                                <div class="tab-pane fade show active" id="menu">
                                     <div class="row">
                                         <div class="col-2">
-<<<<<<< Updated upstream
-                                            <img src="img/circle1.png" alt="" class="w-100">
-=======
                                             <img src={% if menu_type.image %}"{{ menu_type.image.url }}"{% endif %} alt="" class="w-100">
->>>>>>> Stashed changes
                                         </div>
                                         <div class="col-10 col-md-10">
                                             <div class="row">
                                                 <div class="col-12">
                                                     <h2>{{ menu_type }}</h2>
                                                 </div>
+                                
+                                                <!-- Список блюд вместо описания подписки -->
                                                 <div class="col-md-12 col-lg-9">
-<<<<<<< Updated upstream
-                                                    <h6>Описание подписки Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius saepe ea nobis necessitatibus
-                                                        consectetur rem! Eligendi assumenda facere sint quibusdam dolorem quasi doloribus nemo, temporibus molestiae
-                                                        distinctio cum laboriosam sed. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius saepe ea nobis
-                                                        necessitatibus consectetur rem! Eligendi
-                                                        assumenda facere sint quibusdam dolorem quasi doloribus nemo, temporibus molestiae distinctio cum laboriosam
-                                                        sed.</h6>
-=======
                                                     {% for recipe in recipes %}
                                                         <div class="card mb-3">
                                                             <div class="row g-0 align-items-center">
@@ -179,27 +141,30 @@
                                                     {% empty %}
                                                         <p>Нет доступных блюд.</p>
                                                     {% endfor %}
->>>>>>> Stashed changes
                                                 </div>
+                                
+                                                <!-- Информация о подписке -->
                                                 <div class="col-md-12 col-lg-3 text-muted d-flex flex-column justify-content-between">
                                                     <div class="d-flex flex-row justify-content-between">
-                                                        <small>Персоны: </small><small>3</small>
+                                                        <small>Персоны: </small><small>{{ persons_count }}</small>
                                                     </div>
                                                     <div class="d-flex flex-row justify-content-between">
-                                                        <small>Аллергии: </small><small>нет</small>
+                                                        <small>Аллергии: </small><small>{{ allergies_info }}</small>
                                                     </div>
                                                     <div class="d-flex flex-row justify-content-between">
-                                                        <small>Калории: </small><small>1400</small>
+                                                        <small>Калории: </small><small>{{ calories }}</small>
                                                     </div>
                                                     <div class="d-flex flex-row justify-content-between">
-                                                        <small>Кол-во приёмов пищи: </small><small>4</small>
+                                                        <small>Кол-во приёмов пищи: </small><small>{{ meals_count }}</small>
                                                     </div>
-                                                    
                                                 </div>
+                                
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                
+                                
                             </div>
                             
                     </div>

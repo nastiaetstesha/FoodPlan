@@ -26,22 +26,16 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("login/", views.user_login, name="login"),
     path("logout/", views.user_logout, name="logout"),
-    path("card1/", views.card1, name="card1"),
-    path("card2/", views.card2, name="card2"),
-    path("card3/", views.card3, name="card3"),
-    path("lk/", views.lk, name="lk"),
+    path("lk/", views.lk_view, name="lk"),
     path("order/", views.order, name="order"),
     path("registration/", views.registration, name="registration"),
     path("admin/", admin.site.urls),
-<<<<<<< Updated upstream
-=======
     path("recipe/<int:recipe_id>/", views.recipe_detail, name="recipe_detail"),
     path('shopping-list/<int:recipe_id>/', views.shopping_list, name='shopping_list'),
     path('recipe/<int:recipe_id>/feedback/', views.recipe_feedback, name='recipe_feedback'),
     path('lk/upload-avatar/', views.upload_avatar, name='upload_avatar'),
     path('lk/profile_update/', views.profile_update, name='profile_update'),
     path('lk/change_password/', views.change_password, name='change_password'),
->>>>>>> Stashed changes
 ]
 
 if settings.DEBUG:

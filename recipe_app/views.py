@@ -1,8 +1,3 @@
-<<<<<<< Updated upstream
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from django.contrib.auth import authenticate, login, logout
-=======
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
@@ -32,27 +27,55 @@ def registration(request):
     else:
         form = CustomUserCreationForm()
     return render(request, "registration.html", {"form": form})
->>>>>>> Stashed changes
 
 
 def index(request):
-    context = {}
-    return HttpResponse(render(request, "index.html", context))
+    recipes = Recipe.objects.filter(on_index=True)
+    return render(request, "index.html", {"recipes": recipes})
 
 
 def user_login(request):
-    if request.POST:
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-        if user:
-            login(request, user)
-            return redirect("lk")
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            password = form.cleaned_data["password"]
+            try:
+                user_obj = get_object_or_404(User, email=email)
+            except Http404:
+                return HttpResponse("Пользователь не найден")
+            user = authenticate(username=user_obj.username, password=password)
+            print(user)
+            if user:
+                login(request, user)
+                return redirect("lk")
+            else:
+                return HttpResponse("Неправильный e-mail или пароль")
+        # Закомментил код Насти чтобы можно было быстро откатить
+        """
+        email = request.POST.get("email", "")
+        password = request.POST.get("password", "")
+        print(f"Ввод: email={email}, password={password}")
+        try:
+            user_obj = User.objects.get(email=email)
+            print(f"Нашли пользователя: {user_obj}")
+            print(f'{user_obj.email}')
+            print(f'{user_obj.password}')
+            print(f'{user_obj.is_active}')
+            user = authenticate(request, email=email, password=password)
+            print(f"Результат аутентификации: {user}")
+            if user:
+                login(request, user)
+                print("Успешный вход, редирект в lk")
+                return redirect("lk")
+            else:
+                print("Неверный пароль")
+        except User.DoesNotExist:
+            print("Пользователь не найден")
+            """
     return render(request, "auth.html")
 
 
-<<<<<<< Updated upstream
-=======
 def recipe_detail(request, recipe_id):
     userpage = None
     if request.user.is_authenticated:
@@ -112,39 +135,38 @@ def shopping_list(request, recipe_id):
     return render(request, "shopping_list.html", context)
 
 
->>>>>>> Stashed changes
 def user_logout(request):
     logout(request)
     return redirect("login")
 
 
-def card1(request):
-    context = {}
-    return render(request, "card1.html", context)
+@login_required
+def profile(request):
+    return render(request, 'lk.html', {'user': request.user})
 
 
-<<<<<<< Updated upstream
-def card2(request):
-    context = {}
-    return render(request, "card2.html", context)
-=======
 def lk_view(request):
     user_page = UserPage.objects.filter(user=request.user).first()
     today_menu = user_page.today_menu if user_page else None
     avatar = user_page.image
->>>>>>> Stashed changes
 
+    if user_page and user_page.is_subscribed and today_menu:
+        recipes = [
+            today_menu.breakfast,
+            today_menu.lunch,
+            today_menu.dinner
+        ]
+    else:
+        random_recipe = Recipe.objects.order_by('?').first()
+        recipes = [random_recipe]
 
-def card3(request):
-    context = {}
-    return render(request, "card3.html", context)
+    # Получаем инфу для персонального меню
+    persons_count = 1  # Пока жестко 1, если надо больше — нужно брать из модели подписки
+    allergies = user_page.allergies.all() if user_page else []
+    allergies_info = ", ".join([allergy.name for allergy in allergies]) if allergies else "нет"
+    calories = sum(recipe.calories for recipe in recipes if recipe)  # Считаем сумму калорий блюд
+    meals_count = len(recipes)
 
-<<<<<<< Updated upstream
-
-def lk(request):
-    context = {}
-    return render(request, "lk.html", context)
-=======
     context = {
         'recipes': recipes,
         'user_page': user_page,
@@ -160,7 +182,6 @@ def lk(request):
 @login_required
 def upload_avatar(request):
     user_page = UserPage.objects.filter(user=request.user).first()
->>>>>>> Stashed changes
 
     if request.method == 'POST':
         if 'image' not in request.FILES:
@@ -220,11 +241,6 @@ def order(request):
     return render(request, "order.html", context)
 
 
-<<<<<<< Updated upstream
-def registration(request):
-    context = {}
-    return render(request, "registration.html", context)
-=======
 @login_required
 def change_password(request):
     if request.method == 'POST':
@@ -237,4 +253,3 @@ def change_password(request):
     else:
         form = CustomPasswordChangeForm(request.user)
     return render(request, 'lk.html', {'form': form})
->>>>>>> Stashed changes
