@@ -30,7 +30,7 @@ class FoodTagAdmin(admin.ModelAdmin):
 
 @admin.register(UserPage)
 class UserPageAdmin(admin.ModelAdmin):
-    list_display = ("user", "is_subscribed", "all_allergies", "image_preview")
+    list_display = ("username", "user", "is_subscribed", "all_allergies", "image_preview")
     list_editable = ("is_subscribed",)
     list_filter = ("is_subscribed",)
 

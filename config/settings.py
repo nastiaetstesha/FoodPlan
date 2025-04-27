@@ -31,8 +31,7 @@ SECRET_KEY = env("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", False)
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ['185.209.22.60'])
-
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", [])
 
 
 # Application definition
@@ -48,10 +47,6 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = "recipe_app.User"
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -112,9 +107,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-AUTH_USER_MODEL = 'recipe_app.User'
-
-LOGIN_REDIRECT_URL = "/lk/"  # куда перенаправлять после входа
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
