@@ -173,6 +173,12 @@ class RecipeIngredient(models.Model):
 
 class MenuType(models.Model):
     title = models.CharField(max_length=255, unique=True, verbose_name="Тип меню")
+    image = models.ImageField(
+        upload_to="./menus/",
+        verbose_name="Изображение меню",
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return self.title
@@ -220,10 +226,10 @@ class DailyMenu(models.Model):
 
 
 class UserPage(models.Model):
-    first_name = models.CharField(
+    username = models.CharField(
         max_length=255, verbose_name="Имя", blank=True, default="Имя"
     )
-    last_name = models.CharField(max_length=255, verbose_name="Фамилия", blank=True)
+     
     image = models.ImageField(
         upload_to="./avatars/", verbose_name="Изображение", blank=True, null=True
     )
@@ -254,14 +260,14 @@ class UserPage(models.Model):
         null=True,
     )
 
-    def add_to_liked(self, recipe):
-        recipe.liked.add(self)
-        recipe.disliked.remove(self)
-
-    def add_to_disliked(self, recipe):
-        recipe.disliked.add(self)
-        recipe.liked.remove(self)
+    menu_type = models.ForeignKey(
+        MenuType,
+        verbose_name="Диета",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         verbose_name = "Страницы клиентов"
-        ordering = ["first_name", "user"]
+        ordering = ["username", "user"]
