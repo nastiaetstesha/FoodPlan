@@ -26,6 +26,33 @@ class FoodTagAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
 
+<<<<<<< Updated upstream
+=======
+@admin.register(UserPage)
+class UserPageAdmin(admin.ModelAdmin):
+    list_display = ("username", "user", "is_subscribed", "all_allergies", "image_preview")
+    list_editable = ("is_subscribed",)
+    list_filter = ("is_subscribed",)
+
+    def all_allergies(self, obj):
+        if obj.allergies:
+            return ", ".join(allergy.name for allergy in obj.allergies.all())
+        return "-"
+
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{url}" style="max-width: {max_width}px; max-height: {max_height}px; width: auto; height: auto;"/>',
+                max_width=200,
+                max_height=200,
+                url=obj.image.url,
+            )
+        return format_html('<span style="color: gray;">Нет изображения</span>')
+
+    image_preview.short_description = "Превью изображения"
+
+
+>>>>>>> Stashed changes
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     search_fields = ("name",)

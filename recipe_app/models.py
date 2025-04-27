@@ -164,6 +164,22 @@ class RecipeIngredient(models.Model):
         return f"{self.recipe.title}: {self.ingredient.name}, {self.mass} г"
 
 
+<<<<<<< Updated upstream
+=======
+class MenuType(models.Model):
+    title = models.CharField(max_length=255, unique=True, verbose_name="Тип меню")
+    image = models.ImageField(
+        upload_to="./menus/",
+        verbose_name="Изображение меню",
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.title
+
+
+>>>>>>> Stashed changes
 class DailyMenu(models.Model):
     date = models.DateField(default=timezone.now, unique=True)
     breakfast = models.ForeignKey(
@@ -183,6 +199,7 @@ class DailyMenu(models.Model):
         return f"Меню на {self.date}"
 
 
+<<<<<<< Updated upstream
 class UserRecipeFeedback(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
@@ -223,3 +240,51 @@ class ShoppingItem(models.Model):
 
     def __str__(self):
         return f"{self.name} — {self.quantity} — {self.estimated_price}₽"
+=======
+class UserPage(models.Model):
+    username = models.CharField(
+        max_length=255, verbose_name="Имя", blank=True, default="Имя"
+    )
+     
+    image = models.ImageField(
+        upload_to="./avatars/", verbose_name="Изображение", blank=True, null=True
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="page",
+        verbose_name="Связанный аккаунт",
+    )
+    is_subscribed = models.BooleanField(default=False, verbose_name="Премиум")
+    allergies = models.ManyToManyField(
+        FoodTag, related_name="userpages", verbose_name="Аллергии", blank=True
+    )
+    liked_recipes = models.ManyToManyField(
+        Recipe, related_name="liked", verbose_name="Понравившиеся рецепты", blank=True
+    )
+    disliked_recipes = models.ManyToManyField(
+        Recipe,
+        related_name="disliked",
+        verbose_name="Непонравившиеся рецепты",
+        blank=True,
+    )
+    today_menu = models.ForeignKey(
+        DailyMenu,
+        verbose_name="Меню на сегодня",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
+
+    menu_type = models.ForeignKey(
+        MenuType,
+        verbose_name="Диета",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+    )
+
+    class Meta:
+        verbose_name = "Страницы клиентов"
+        ordering = ["username", "user"]
+>>>>>>> Stashed changes
