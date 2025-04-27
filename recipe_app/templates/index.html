@@ -31,21 +31,29 @@
             background-position: center;
             background-size: contain;
         }
-        .carousel-item__gradient {
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-        }
     </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-light fixed-top navbar__opacity">
-            <div class="container">
+        <nav class="navbar navbar-light fixed-top navbar__opacity" class="d-flex align-items-center gap-0">
+            <div class="container d-flex justify-content-between align-items-center">
                 <a class="navbar-brand" href="https://dvmn.org/">
                     <img src="{% static 'img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
                 </a>
-                <a href="{% url 'login' %}" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">
-                    Войти
-                </a>
+                <div class="d-flex align-items-center gap-1">
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'lk' %}" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">
+                            Личный кабинет
+                        </a>
+                        <a href="{% url 'logout' %}" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">
+                            {{ request.user.username }} (Выйти)
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">
+                            Войти
+                        </a>
+                    {% endif %}
+                </div>
             </div>
         </nav>
     </header>
@@ -59,7 +67,7 @@
                             Вы получаете рецепты + список продуктов.<br>
                             Больше не нужно думать, что готовить.</h4>
                         <div class="d-block mt-3">
-                            <a href="{% url 'order' %}" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Хочу попробовать</a>
+                            <a href={% if request.user.is_authenticated %}"{% url 'order' %}" {% else %} "{% url 'login' %}" {% endif %} class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Хочу попробовать</a>
                         </div>
                     </div>
                 </div>
@@ -140,7 +148,7 @@
                             <span class="visually-hidden">Next</span>
                         </button>
                     </div>
-                </div>
+                </div>        
             </div>
         </section>
         <section>

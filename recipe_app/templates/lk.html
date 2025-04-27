@@ -15,10 +15,10 @@
     <header>
         <nav class="navbar navbar-expand-md navbar-light fixed-top navbar__opacity">
             <div class="container">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="https://dvmn.org/">
                     <img src="{% static 'img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
                 </a>
-                <button class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green">Выйти</button>
+                <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green" href="{% url 'logout' %}">Выйти</a>
             </div>
         </nav>
     </header>
@@ -28,18 +28,25 @@
                 <div class="row">
                     <div class="card col-12 p-3 mb-5 foodplan__shadow">
                         <h4 class="foodplan__backButton">
-                            <strong><small><a href="#" class="link-secondary fw-light"></a></small></strong>
+                            <strong><small><a href="{% url "index" %}" class="link-secondary fw-light"> На главную </a></small></strong>
                         </h4>
                         <h2 class="text-center"><strong>Личный кабинет</strong></h2>
                     </div>
                     
                     <div class="card col-12 col-md-2 p-3 mb-3 d-flex flex-column align-items-center foodplan__shadow">
+                        <h3 class="card-title text-center">{{ user_page.username }}</h3>
                         <div class="position-relative">
-                            <img src="img/test_avatar.png" alt="" width="100" height="100" class="rounded-pill">
-                            <span class="badge rounded-circle position-absolute bottom-0 end-0 foodplan__bg_green avatar__plus"><a href="#"
-                                    class="link-dark text-decoration-none align-middle">+</a></span>
+                            <img src= {% if avatar %} "{{ avatar.url }}" {% endif %} alt="" width="100" height="100" class="rounded-pill">
+                            <form method="post" enctype="multipart/form-data" id="avatarForm" action="{% url 'upload_avatar' %}">
+                                {% csrf_token %}
+                                <input type="file" name="image" id="id_image" accept="image/*" class="d-none" 
+                                    onchange="document.getElementById('avatarForm').submit()">
+                                <button type="button" class="btn foodplan_green foodplan__border_green btn-sm" 
+                                    onclick="document.getElementById('id_image').click()">
+                                    Сменить аватар
+                                </button>
+                            </form>
                         </div>
-                        <h3 class="card-title text-center">Tim</h3>
                         <div class="d-block">
                             <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green" href="{% url 'logout' %}">Выйти</a>
                         </div>
@@ -57,44 +64,56 @@
                             </ul>
                             <div class="tab-content mt-2">
                                 <div class="tab-pane fade show active" id="data">
-                                    <form action="">
+                                    <form method="post" action="{% url 'profile_update' %}" enctype="multipart/form-data">
+                                        {% csrf_token %}
                                         <div class="mb-3">
                                             <div class="d-flex align-items-center justify-content-between">
-                                                <label for="name" class="form-label">Имя</label>
-                                                <small><a href="#" class="link-dark foodplan_green">изменить</a></small>
+                                                <label for="username" class="form-label">Имя пользователя</label>
                                             </div>
-                                            <input type="text" class="form-control" id="name" value="{{ user.first_name }}">
+                                            <input type="text" class="form-control" id="username" name="username" value="{{ user_page.username|default_if_none:'' }}" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="email" class="form-label">Email</label>
-                                            <input type="email" class="form-control" id="email" value="{{ user.email }}" aria-describedby="emailHelp">
-                                        </div>
-                                        <div class="mb-3">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <label for="password" class="form-label">Пароль</label>
-                                                <small><a href="#" class="link-dark foodplan_green">изменить</a></small>
-                                            </div>
-                                            <input type="password" class="form-control" id="password" placeholder="********" disabled>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="PasswordConfirm" class="form-label">Подтверждение пароля</label>
-                                            <input type="password" class="form-control" id="PasswordConfirm" placeholder="********" disabled>
+                                            <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" aria-describedby="emailHelp" required>
                                         </div>
                                         <div class="d-block">
                                             <button type="submit" class="btn shadow-none btn-outline-success foodplan_green foodplan__border_green">Сохранить изменения</button>
                                         </div>
                                     </form>
-                                    
+                                    <form method="post" action="{% url 'change_password' %}" enctype="multipart/form-data">
+                                        <div class="modal-body">
+                                            {% csrf_token %}
+                                            <div class="mb-3">
+                                                <label for="id_old_password" class="form-label">Текущий пароль</label>
+                                                <input type="password" name="old_password" class="form-control" required id="id_old_password">
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="id_new_password1" class="form-label">Новый пароль</label>
+                                                <input type="password" name="new_password1" class="form-control" required id="id_new_password1">
+                                                <small class="text-muted">Минимум 8 символов, не только цифры</small>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="id_new_password2" class="form-label">Подтверждение</label>
+                                                <input type="password" name="new_password2" class="form-control" required id="id_new_password2">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                            <button type="submit" class="btn foodplan_green foodplan__border_green">Сохранить</button>
+                                        </div>
+                                    </form>
                                 </div>
                                 <div class="tab-pane fade show active" id="menu">
                                     <div class="row">
                                         <div class="col-2">
-                                            <img src="{% static 'img/circle1.png' %}" alt="" class="w-100">
+                                            <img src={% if menu_type.image %}"{{ menu_type.image.url }}"{% endif %} alt="" class="w-100">
                                         </div>
                                         <div class="col-10 col-md-10">
                                             <div class="row">
                                                 <div class="col-12">
-                                                    <h2>Название подписки</h2>
+                                                    <h2>{{ menu_type }}</h2>
                                                 </div>
                                 
                                                 <!-- Список блюд вместо описания подписки -->
@@ -103,7 +122,9 @@
                                                         <div class="card mb-3">
                                                             <div class="row g-0 align-items-center">
                                                                 <div class="col-md-4">
-                                                                    <img src="{{ recipe.image.url }}" class="img-fluid rounded-start" alt="{{ recipe.title }}">
+                                                                    <a href="{% url 'recipe_detail' recipe.id %}" class="link-dark text-decoration-none">
+                                                                        <img src="{{ recipe.image.url }}" class="img-fluid rounded-start" alt="{{ recipe.title }} ">
+                                                                    </a>
                                                                 </div>
                                                                 <div class="col-md-8">
                                                                     <div class="card-body">
