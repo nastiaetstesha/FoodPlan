@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from random import choice
+
 from .forms import (
     CustomUserCreationForm,
     LoginForm,
@@ -119,23 +121,50 @@ def recipe_detail(request, recipe_id):
 
 @login_required
 def recipe_feedback(request, recipe_id):
-    try:
-        recipe = get_object_or_404(Recipe, pk=recipe_id)
-        user_page = get_object_or_404(UserPage, user=request.user)
-        liked = "liked" in request.POST
-        disliked = "disliked" in request.POST
+    recipe = get_object_or_404(Recipe, pk=recipe_id)
+    user_page = get_object_or_404(UserPage, user=request.user)
 
-        if liked:
-            if recipe in user_page.disliked_recipes.all():
-                user_page.disliked_recipes.remove(recipe)
-            user_page.liked_recipes.add(recipe)
-        elif disliked:
-            if recipe in user_page.liked_recipes.all():
-                user_page.liked_recipes.remove(recipe)
+    if 'disliked' in request.POST:
+        # При первом нажатии установить счетчик
+        if 'replace_attempts' not in request.session:
+            request.session['replace_attempts'] = 2
+
+        # Проверить, сколько осталось попыток
+        if request.session['replace_attempts'] > 0:
+            # Добавляем рецепт в дизлайкнутые
             user_page.disliked_recipes.add(recipe)
-        return redirect("recipe_detail", recipe_id=recipe_id)
-    except Http404:
-        return redirect("login")
+
+            # Находим другой случайный рецепт
+            disliked_ids = user_page.disliked_recipes.values_list('id', flat=True)
+            new_recipe = Recipe.objects.exclude(id__in=disliked_ids).order_by('?').first()
+
+            # Уменьшаем количество оставшихся замен
+            request.session['replace_attempts'] -= 1
+
+            if new_recipe:
+                return redirect('recipe_detail', recipe_id=new_recipe.id)
+            else:
+                # Если новых рецептов нет, вернуть назад
+                return redirect('recipe_detail', recipe_id=recipe_id)
+
+        else:
+            # Нет попыток замены — просто дизлайкнуть
+            user_page.disliked_recipes.add(recipe)
+            messages.info(request, "Вы использовали все попытки сменить блюдо.")
+            return redirect('recipe_detail', recipe_id=recipe_id)
+
+    elif 'liked' in request.POST:
+        # Очистить попытки, если поставили лайк
+        request.session.pop('replace_attempts', None)
+
+        # Добавляем лайк
+        if recipe in user_page.disliked_recipes.all():
+            user_page.disliked_recipes.remove(recipe)
+        user_page.liked_recipes.add(recipe)
+
+        return redirect('recipe_detail', recipe_id=recipe_id)
+
+    return redirect('recipe_detail', recipe_id=recipe_id)
 
 
 def shopping_list(request, recipe_id):
