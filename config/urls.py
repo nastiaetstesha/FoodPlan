@@ -31,7 +31,6 @@ urlpatterns = [
     path("registration/", views.registration, name="registration"),
     path("admin/", admin.site.urls),
     path("recipe/<int:recipe_id>/", views.recipe_detail, name="recipe_detail"),
-    path('shopping-list/<int:recipe_id>/', views.shopping_list, name='shopping_list'),
     path('recipe/<int:recipe_id>/feedback/', views.recipe_feedback, name='recipe_feedback'),
     path('lk/upload-avatar/', views.upload_avatar, name='upload_avatar'),
     path('lk/profile_update/', views.profile_update, name='profile_update'),

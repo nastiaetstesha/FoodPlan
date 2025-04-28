@@ -10,6 +10,7 @@ from .models import (
     PriceRange,
     UserPage,
     MenuType,
+    Subscription,
 )
 from django.utils.html import format_html
 
@@ -28,15 +29,39 @@ class FoodTagAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
 
+class SubscriptionInline(admin.TabularInline):
+    model = Subscription
+    extra = 0
+    fields = ("months", "persons", "price", ("breakfast", "lunch", "dinner", "dessert",))
+
+
 @admin.register(UserPage)
 class UserPageAdmin(admin.ModelAdmin):
-    list_display = ("username", "user", "is_subscribed", "all_allergies", "image_preview")
+    inlines = [
+        SubscriptionInline,
+    ]
+    list_display = (
+        "username",
+        "user",
+        "is_subscribed",
+        "menu_type",
+        "all_allergies",
+        "image_preview",
+        "daily_menus",
+    )
     list_editable = ("is_subscribed",)
     list_filter = ("is_subscribed",)
 
     def all_allergies(self, obj):
         if obj.allergies:
             return ", ".join(allergy.name for allergy in obj.allergies.all())
+        return "-"
+
+    def daily_menus(self, obj):
+        if obj.daily_menu:
+            return ", ".join(
+                f"{menu.menu_type}-{menu.date}" for menu in obj.daily_menu.all()
+            )
         return "-"
 
     def image_preview(self, obj):
@@ -49,6 +74,8 @@ class UserPageAdmin(admin.ModelAdmin):
             )
         return format_html('<span style="color: gray;">Нет изображения</span>')
 
+    image_preview.short_description = "Превью изображения"
+    all_allergies.short_description = "Аллергии"
     image_preview.short_description = "Превью изображения"
 
 
@@ -101,10 +128,21 @@ class RecipeAdmin(admin.ModelAdmin):
     image_preview.short_description = "Превью изображения"
 
 
-
 @admin.register(MenuType)
 class MenuTypeAdmin(admin.ModelAdmin):
-    list_display = ("title",)
+    list_display = ("title", "image_preview")
+
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{url}" style="max-width: {max_width}px; max-height: {max_height}px; width: auto; height: auto;"/>',
+                max_width=200,
+                max_height=200,
+                url=obj.image.url,
+            )
+        return format_html('<span style="color: gray;">Нет изображения</span>')
+
+    image_preview.short_description = "Превью изображения"
 
 
 @admin.register(DailyMenu)
