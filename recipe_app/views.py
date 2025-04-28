@@ -44,7 +44,10 @@ def registration(request):
 
 
 def index(request):
-    recipes = Recipe.objects.filter(on_index=True)
+    if Recipe.objects.exists():
+        recipes = Recipe.objects.filter(on_index=True)
+    else:
+        recipes = []
     return render(request, "index.html", {"recipes": recipes})
 
 

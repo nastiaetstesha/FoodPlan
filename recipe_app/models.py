@@ -237,8 +237,6 @@ class UserPage(models.Model):
         ordering = ["username"]
 
 
-
-   
 class Subscription(models.Model):
        
     base_price = models.DecimalField(
