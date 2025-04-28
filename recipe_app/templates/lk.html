@@ -18,7 +18,15 @@
                 <a class="navbar-brand" href="https://dvmn.org/">
                     <img src="{% static 'img/logo.8d8f24edbb5f.svg' %}" height="55" width="189" alt="">
                 </a>
-                <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green" href="{% url 'logout' %}">Выйти</a>
+                <li class="nav-item align-items-center d-md-flex flex-grow-1 justify-content-end">
+                    <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green me-2" href={% url 'index' %}>Домашняя страница</a>
+                    {% if not is_subscribed %}
+                        <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green me-2" href="{% url 'order' %}">
+                            Оформить подписку
+                        </a>
+                    {% endif %}
+                <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green" href="{% url 'logout' %}">Выйти</a>    
+                </li>
             </div>
         </nav>
     </header>
@@ -36,7 +44,7 @@
                     <div class="card col-12 col-md-2 p-3 mb-3 d-flex flex-column align-items-center foodplan__shadow">
                         <h3 class="card-title text-center">{{ user_page.username }}</h3>
                         <div class="position-relative">
-                            <img src= {% if avatar %} "{{ avatar.url }}" {% endif %} alt="" width="100" height="100" class="rounded-pill">
+                            <img src= {% if avatar %} "{{ avatar.url }}" {% endif %} alt="Аватар" width="100" height="100" class="rounded-pill">
                             <form method="post" enctype="multipart/form-data" id="avatarForm" action="{% url 'upload_avatar' %}">
                                 {% csrf_token %}
                                 <input type="file" name="image" id="id_image" accept="image/*" class="d-none" 
