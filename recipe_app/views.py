@@ -205,15 +205,22 @@ def lk_view(request):
         user_page.save(update_fields=["username"])
 
     is_subscribed = user_page.is_subscribed
+    subscription = user_page.subscription.first()
     menu_type = user_page.menu_type
     avatar = user_page.image
     allergies = user_page.allergies.all()
     persons_count = 1
-    if is_subscribed and menu_type:
+    today_menu = None
+    if is_subscribed and menu_type and hasattr(user_page.menu_type, 'dailymenus'):
+        menu_type = subscription.menu_type if hasattr(subscription, "menu_type") else 1
         today_menu = user_page.menu_type.dailymenus.first()
-        recipes = [today_menu.breakfast, today_menu.lunch, today_menu.dinner]
-        persons_count = user_page.subscription.get().persons
-
+        breakfast = today_menu.breakfast if subscription.breakfast else None
+        lunch = today_menu.lunch if subscription.breakfast else None
+        dinner = today_menu.dinner if subscription.dinner else None
+        dessert = today_menu.dessert if subscription.lunch else None
+        raw_recipes = [breakfast, lunch, dinner, dessert]
+        recipes = [recipe for recipe in raw_recipes if recipe]
+        persons_count = subscription.persons if hasattr(subscription, "persons") else 1
     else:
         random_recipe = Recipe.objects.order_by("?").first()
         recipes = [random_recipe]
@@ -302,17 +309,33 @@ def profile_update(request):
 
 @login_required
 def order(request):
-    user_page = UserPage.objects.filter(user=request.user).first()
-
-    if not user_page:
+    try:
+        user_page = get_object_or_404(UserPage, user=request.user)
+        if user_page.is_subscribed:
+            if hasattr(user_page, 'subscription') and user_page.subscription:
+                user_page.subscription.all().delete()
+                messages.success(request, "Подписка удалена")
+            else:
+                messages.info(request, "Активная подписка не найдена")
+    except UserPage.DoesNotExist:
+        messages.error(request, "Пользователь не найден")
         return redirect("login")
 
     if request.method == "POST":
         form = OrderForm(request.POST)
         if form.is_valid():
             try:
+                menu_type_id = form.cleaned_data.get("menu_type")
+                menu_type = MenuType.objects.get(id=menu_type_id)
+                allergy_ids = request.POST.getlist("allergies", None)
+                if allergy_ids:
+                    user_page.allergies.set(allergy_ids)
+                user_page.is_subscribed = True
+                user_page.menu_type = menu_type
+                user_page.save()
                 Subscription.objects.create(
                     user=user_page,
+                    menu_type=menu_type,        
                     months=form.cleaned_data["months"],
                     persons=form.cleaned_data["persons"],
                     breakfast=form.cleaned_data["breakfast"],
@@ -320,17 +343,8 @@ def order(request):
                     dinner=form.cleaned_data["dinner"],
                     dessert=form.cleaned_data["dessert"],
                     promocode=form.cleaned_data["promo_code"],
-                )
-
-                user_page.is_subscribed = True
-                allergy_ids = request.POST.getlist("allergies", None)
-                if allergy_ids:
-                    user_page.allergies.set(allergy_ids)
-                menu_type_id = form.cleaned_data.get("menu_type")
-                if menu_type_id:
-                    user_page.menu_types.add(menu_type_id)
-                user_page.save()
-
+                )       
+                messages.success(request, "Подписка оформлена")    
                 return redirect("lk")
 
             except Exception as e:
