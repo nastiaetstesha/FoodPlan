@@ -20,12 +20,14 @@
                 </a>
                 <li class="nav-item align-items-center d-md-flex flex-grow-1 justify-content-end">
                     <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green me-2" href={% url 'index' %}>Домашняя страница</a>
-                    {% if not is_subscribed %}
-                        <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green me-2" href="{% url 'order' %}">
-                            Оформить подписку
-                        </a>
-                    {% endif %}
-                <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green" href="{% url 'logout' %}">Выйти</a>    
+                    <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green me-2" href="{% url 'order' %}">
+                        {% if not is_subscribed %}
+                        Оформить подписку
+                        {% else %}
+                        Сменить подписку
+                        {% endif %}
+                    </a>
+                    <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green" href="{% url 'logout' %}">Выйти</a>    
                 </li>
             </div>
         </nav>
