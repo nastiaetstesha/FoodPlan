@@ -232,13 +232,15 @@ class UserPage(models.Model):
         blank=True,
     )
 
+    def __str__(self):
+        return self.username
+
     class Meta:
         verbose_name = "Страницы клиентов"
         ordering = ["username"]
 
 
-class Subscription(models.Model):
-       
+class Subscription(models.Model): 
     base_price = models.DecimalField(
         verbose_name="Базовая стоимость подписки, руб",
         max_digits=10,
@@ -252,8 +254,13 @@ class Subscription(models.Model):
         related_name="subscription",
         on_delete=models.CASCADE,
         verbose_name="Пользователь",
-        blank=True,
-        null=True,
+    )
+    
+    menu_type = models.ForeignKey(
+        MenuType,
+        related_name="subscriptions",
+        verbose_name="Тип меню",
+        on_delete=models.CASCADE,
     )
 
     months = models.PositiveIntegerField(
@@ -286,6 +293,11 @@ class Subscription(models.Model):
     )
     
     promocode = models.CharField(max_length=255, verbose_name="Промокод", blank=True, null=True)
+    
+    
+    class Meta:
+        verbose_name = "Подписки"
+        ordering = ["user", "menu_type"]
     
 
 class DailyMenu(models.Model):
