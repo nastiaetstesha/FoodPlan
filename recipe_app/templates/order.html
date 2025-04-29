@@ -37,11 +37,24 @@
                     <h5 class="text-secondary mb-3">Вам доступно {{ menu_types.count }} меню:</h5>
                     <div class="row mb-5">
                         {% for menu_type in menu_types %}
-                        <div class="col-6 col-md-3">
-                            <label for="menu-{{ menu_type.id }}" class="position-relative" style="cursor: pointer;">
-                                <img src="{{ menu_type.image.url }}" alt="{{ menu_type.title }}" class="w-100">
-                                {{ form.menu_type }}
-                            </label>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="card h-100">
+                                <img src="{{ menu_type.image.url }}" alt="{{ menu_type.title }}" class="card-img-top">
+                                <div class="card-body text-center">
+                                    <div class="form-check">
+                                        <input class="form-check-input" 
+                                               type="radio" 
+                                               name="{{ form.menu_type.name }}" 
+                                               id="menu-{{ menu_type.id }}" 
+                                               value="{{ menu_type.id }}"
+                                               {% if form.menu_type.value == menu_type.id %}checked{% endif %}>
+                                        
+                                        <label class="form-check-label" for="menu-{{ menu_type.id }}">
+                                            {{ menu_type.title }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         {% endfor %}
                     </div>
