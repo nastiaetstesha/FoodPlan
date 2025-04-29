@@ -20,12 +20,14 @@
                 </a>
                 <li class="nav-item align-items-center d-md-flex flex-grow-1 justify-content-end">
                     <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green me-2" href={% url 'index' %}>Домашняя страница</a>
-                    {% if not is_subscribed %}
-                        <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green me-2" href="{% url 'order' %}">
-                            Оформить подписку
-                        </a>
-                    {% endif %}
-                <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green" href="{% url 'logout' %}">Выйти</a>    
+                    <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green me-2" href="{% url 'order' %}">
+                        {% if not is_subscribed %}
+                        Оформить подписку
+                        {% else %}
+                        Сменить подписку
+                        {% endif %}
+                    </a>
+                    <a class="btn btn-outline-success shadow-none foodplan_green foodplan__border_green" href="{% url 'logout' %}">Выйти</a>    
                 </li>
             </div>
         </nav>
@@ -113,15 +115,15 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="tab-pane fade show active" id="menu">
+                                <div class="tab-pane fade" id="menu">
                                     <div class="row">
                                         <div class="col-2">
-                                            <img src={% if menu_type.image %}"{{ menu_type.image.url }}"{% endif %} alt="" class="w-100">
+                                            <img src={% if menu_type.image %}"{{ menu_type.image.url }}"{% else %}{% static 'img/circle1.png' %}{% endif %} alt="" class="w-100">
                                         </div>
                                         <div class="col-10 col-md-10">
                                             <div class="row">
                                                 <div class="col-12">
-                                                    <h2>{{ menu_type }}</h2>
+                                                    <h2>{{ menu_type|default_if_none:'Нет подписки' }}</h2>
                                                 </div>
                                 
                                                 <!-- Список блюд вместо описания подписки -->

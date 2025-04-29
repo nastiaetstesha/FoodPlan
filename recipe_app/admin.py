@@ -29,11 +29,32 @@ class FoodTagAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
 
+
+@admin.register(Subscription)
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = (
+        "userpage",
+        "menu_type",
+        "months",
+        "persons",
+        "price",
+        "breakfast",
+        "lunch",
+        "dinner",
+        "dessert",
+    )
+    list_filter = ("menu_type", "months", "breakfast", "lunch", "dinner", "dessert")
+    list_editable = ("breakfast", "lunch", "dinner", "dessert")
+    
+    def userpage(self, obj):
+        return obj.user.username
+    
+    userpage.short_description = "Страница пользователя"
+
 class SubscriptionInline(admin.TabularInline):
     model = Subscription
     extra = 0
     fields = ("months", "persons", "price", ("breakfast", "lunch", "dinner", "dessert",))
-
 
 @admin.register(UserPage)
 class UserPageAdmin(admin.ModelAdmin):
