@@ -118,12 +118,12 @@
                                 <div class="tab-pane fade show active" id="menu">
                                     <div class="row">
                                         <div class="col-2">
-                                            <img src={% if menu_type.image %}"{{ menu_type.image.url }}"{% endif %} alt="" class="w-100">
+                                            <img src={% if menu_type.image %}"{{ menu_type.image.url }}"{% else %}{% static 'img/circle1.png' %}{% endif %} alt="" class="w-100">
                                         </div>
                                         <div class="col-10 col-md-10">
                                             <div class="row">
                                                 <div class="col-12">
-                                                    <h2>{{ menu_type }}</h2>
+                                                    <h2>{{ menu_type|default_if_none:'Нет подписки' }}</h2>
                                                 </div>
                                 
                                                 <!-- Список блюд вместо описания подписки -->
