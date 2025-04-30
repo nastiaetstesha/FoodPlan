@@ -261,6 +261,8 @@ class Subscription(models.Model):
         related_name="subscriptions",
         verbose_name="Тип меню",
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
 
     months = models.PositiveIntegerField(
